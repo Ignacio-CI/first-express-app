@@ -12,6 +12,10 @@ app.use(session({
 
 app.use(express.static('public'));
 
+app.set('view engine', 'ejs');
+
+app.set('views', './views');
+
 let bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
@@ -39,21 +43,30 @@ connection.query('SELECT * FROM users', function (error, results, fields) {
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/views/index.html');
+  const data = {
+    title: 'Welcome',
+    style: 'color: red',
+  };
+  res.render('index', data);
+  // res.sendFile(__dirname + '/views/html/index.html');
 }) 
 
-app.get('/api/getuser/', (req, res) => {
+app.get('/api/getuser', (req, res) => {
   res.json('{"name": "Iggy"}');
 });
 
 app.get('/login', (req, res) => {
-  res.sendFile(__dirname + '/views/login.html');
+  res.render('login');
 });
 
 app.get('/logged-in', (req, res) => {
   if (req.session.authenticated) {
-
-    res.sendFile(__dirname + '/views/logged-in.html');
+    const data = {
+      name: 'Iggy',
+      style: 'color: red',
+    }
+    res.render('logged-in', data);
+    // res.sendFile(__dirname + '/views/html/logged-in.html');
   }
   else {
     res.redirect('/login');
